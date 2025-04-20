@@ -27,7 +27,7 @@ tgBot.command('tomorrow', async (ctx) => {
   const subscriptions: subscriptionInterface[] = await getNextSubscriptions();
 
   if (!subscriptions.length) {
-    await ctx.reply('Завтра нет оплаты за подписки');
+    await ctx.reply('Завтра нет оплат за подписки :)');
   } else {
     const message = generateMessage(subscriptions);
 
@@ -38,7 +38,7 @@ tgBot.command('tomorrow', async (ctx) => {
 tgBot.on(message('text'), async (ctx) => {
   if (ctx.message.text.startsWith('/')) return;
 
-  console.log(`Get message '${ctx.message.text}' from ${JSON.stringify(ctx.message.from)}`);
+  console.log(`Get message ${JSON.stringify(ctx.message)} from ${JSON.stringify(ctx.message.from)}`);
 
   const name = ctx.message?.from?.first_name || 'незнакомец';
 

@@ -3,7 +3,7 @@ import { notionConfig } from '../config/notion.config';
 import dayjs from 'dayjs';
 import { subscriptionInterface } from '../types/notion.interface';
 
-const notionClient = new Client({
+export const notionClient = new Client({
   auth: notionConfig.authToken,
 });
 
@@ -25,13 +25,13 @@ const getSubscriptionsByDay = async (day: string): Promise<subscriptionInterface
     filter: {
       and: [
         {
-          property: 'Date',
+          property: 'Дата',
           date: {
             equals: day,
           },
         },
         {
-          property: 'Tags',
+          property: 'Категория',
           select: {
             equals: 'Подписки',
           },
@@ -41,11 +41,10 @@ const getSubscriptionsByDay = async (day: string): Promise<subscriptionInterface
   })
     .then((res) => res.results.map((row: any) => {
         return {
-          date: row.properties.Date.date.start,
-          description: row.properties['Описание'].rich_text[0]?.text.content || '',
-          title: row.properties.Name.title[0].text.content,
+          date: row.properties['Дата'].date.start,
+          title: row.properties['Название'].title[0].text.content,
           owner: row.properties['Виновник'].select.name,
-          price: row.properties.price.number,
+          price: row.properties['Стоимость'].number,
         }
       }))
     .catch((err) => {
@@ -62,21 +61,14 @@ const updateSubscriptionDate = async (subscription: subscriptionInterface): Prom
       database_id: notionConfig.dbId,
     },
     properties: {
-      title: {
+      'Название': {
         title: [{
           text: {
             content: subscription.title,
           },
         }],
       },
-      'Описание': {
-        rich_text: [{
-          text: {
-            content: subscription.description,
-          },
-        }],
-      },
-      Date: {
+      'Дата': {
         date: {
           start: dayjs(subscription.date).add(1, 'month').format('YYYY-MM-DD'),
         },
@@ -86,10 +78,10 @@ const updateSubscriptionDate = async (subscription: subscriptionInterface): Prom
           name: subscription.owner,
         },
       },
-      price: {
+      'Стоимость': {
         number: subscription.price,
       },
-      Tags: {
+      'Категория': {
         select: {
           name: 'Подписки'
         }
