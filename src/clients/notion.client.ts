@@ -7,6 +7,18 @@ const notionClient = new Client({
   auth: notionConfig.authToken,
 });
 
+await notionClient.search({ page_size: 1 })
+  .then((res) => {
+    if (res) {
+      console.log('Notion client created!');
+    } else {
+      console.log('Notion client not created :(');
+    }
+  })
+  .catch((err) => {
+    console.log('Error while starting notion client:', err);
+  });
+
 const getSubscriptionsByDay = async (day: string): Promise<subscriptionInterface[]> => {
   const subscriptions = await notionClient.databases.query({
     database_id: notionConfig.dbId,

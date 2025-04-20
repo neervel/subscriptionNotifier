@@ -8,6 +8,8 @@ import { generateMessage } from '../utils/generateMessage';
 export const tgBot = new Telegraf(telegramConfig.botToken);
 
 tgBot.command('today', async (ctx) => {
+  console.log(`Get command 'today' from ${JSON.stringify(ctx.message.from)}`);
+
   const subscriptions: subscriptionInterface[] = await getTodaySubscriptions();
 
   if (!subscriptions.length) {
@@ -20,6 +22,8 @@ tgBot.command('today', async (ctx) => {
 });
 
 tgBot.command('tomorrow', async (ctx) => {
+  console.log(`Get command 'tomorrow' from ${JSON.stringify(ctx.message.from)}`);
+
   const subscriptions: subscriptionInterface[] = await getNextSubscriptions();
 
   if (!subscriptions.length) {
@@ -34,6 +38,8 @@ tgBot.command('tomorrow', async (ctx) => {
 tgBot.on(message('text'), async (ctx) => {
   if (ctx.message.text.startsWith('/')) return;
 
+  console.log(`Get message '${ctx.message.text}' from ${JSON.stringify(ctx.message.from)}`);
+
   const name = ctx.message?.from?.first_name || 'незнакомец';
 
   await ctx.reply(`Привет, ${name}! Я пока не умею отвечать на сообщения 😢`);
@@ -41,6 +47,9 @@ tgBot.on(message('text'), async (ctx) => {
 
 const sendMessage = async (chatId: number, messageText: string) => {
   await tgBot.telegram.sendMessage(chatId, messageText)
+    .then(() => {
+      console.log(`Message ${messageText} sent to chat ${chatId}`);
+    })
     .catch((err: any) => {
       console.log(err, 'Error while sending message');
     });

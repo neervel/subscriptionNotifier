@@ -8,7 +8,9 @@
     "dev:bot": "tsx watch --clear-screen=false -r dotenv/config src/bot.ts",
     "build": "tsc",
     "start": "node -r dotenv/config --import=specifier-resolution-node/register dist/index.js",
-    "start:bot": "node -r dotenv/config --import=specifier-resolution-node/register dist/bot.js"
+    "start:bot": "node -r dotenv/config --import=specifier-resolution-node/register dist/bot.js",
+    "up": "docker-compose up -d",
+    "down": "docker-compose down"
   },
   "keywords": [],
   "author": "neervel",
