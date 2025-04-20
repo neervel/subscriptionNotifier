@@ -10,11 +10,10 @@ const countTotalAmount = (subscriptions: subscriptionInterface[]): string => {
   return replaceThousands(total);
 }
 
-export const generateMessage = (subscriptions: subscriptionInterface[]): string | null =>
-  subscriptions.length ?
-`👋 Завтра спишется ${countTotalAmount(subscriptions)} по ${
-  makePluralForm('подписк', subscriptions.length, 'е', 'ам')
-}:\n
-${subscriptions.map((sub: subscriptionInterface) => 
-    `• ${sub.title} (${sub.owner}) - ${replaceThousands(sub.price)}`
-).join('\n')}`: null;
+export const generateMessage = (subscriptions: subscriptionInterface[], today = false): string =>
+  `${today ? 'Сегодня' : 'Завтра'} спишется ${countTotalAmount(subscriptions)} по ${
+    makePluralForm('подписк', subscriptions.length, 'е', 'ам')
+  }:\n
+${subscriptions.map((sub: subscriptionInterface) =>
+    ` • ${sub.title} (${sub.owner}) - ${replaceThousands(sub.price)}`
+  ).join('\n')}`;

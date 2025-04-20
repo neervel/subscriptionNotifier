@@ -1,10 +1,39 @@
 import { Telegraf } from 'telegraf';
 import { telegramConfig } from '../config/telegram.config';
 import { message } from 'telegraf/filters';
+import { subscriptionInterface } from '../types/notion.interface';
+import { getNextSubscriptions, getTodaySubscriptions } from './notion.client';
+import { generateMessage } from '../utils/generateMessage';
 
 export const tgBot = new Telegraf(telegramConfig.botToken);
 
+tgBot.command('today', async (ctx) => {
+  const subscriptions: subscriptionInterface[] = await getTodaySubscriptions();
+
+  if (!subscriptions.length) {
+    await ctx.reply('Сегодня нет оплаты за подписки');
+  } else {
+    const message = generateMessage(subscriptions, true);
+
+    await ctx.reply(message);
+  }
+});
+
+tgBot.command('tomorrow', async (ctx) => {
+  const subscriptions: subscriptionInterface[] = await getNextSubscriptions();
+
+  if (!subscriptions.length) {
+    await ctx.reply('Завтра нет оплаты за подписки');
+  } else {
+    const message = generateMessage(subscriptions);
+
+    await ctx.reply(message);
+  }
+});
+
 tgBot.on(message('text'), async (ctx) => {
+  if (ctx.message.text.startsWith('/')) return;
+
   const name = ctx.message?.from?.first_name || 'незнакомец';
 
   await ctx.reply(`Привет, ${name}! Я пока не умею отвечать на сообщения 😢`);
@@ -28,4 +57,4 @@ export const sendMessageToAllChats = async (messageText: string) => {
   ).then(() => {
     console.log(`${chatsCount} message${chatsCount > 1 ? 's': ''} sent`);
   });
-}
+};

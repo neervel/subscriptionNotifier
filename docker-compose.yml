@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  bot:
+    build: .
+    container_name: notify_bot
+    env_file: .env
+    restart: unless-stopped
+    command: npm run start:bot
+  notifier:
+    build: .
+    container_name: notifications
+    env_file: .env
+    restart: unless-stopped
+    command: npm start
+
+

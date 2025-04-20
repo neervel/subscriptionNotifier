@@ -1,6 +1,5 @@
 import { Client } from '@notionhq/client';
 import { notionConfig } from '../config/notion.config';
-import { NOTION_DB_ID } from '../constants';
 import dayjs from 'dayjs';
 import { subscriptionInterface } from '../types/notion.interface';
 
@@ -10,7 +9,7 @@ const notionClient = new Client({
 
 const getSubscriptionsByDay = async (day: string): Promise<subscriptionInterface[]> => {
   const subscriptions = await notionClient.databases.query({
-    database_id: NOTION_DB_ID,
+    database_id: notionConfig.dbId,
     filter: {
       and: [
         {
@@ -29,7 +28,6 @@ const getSubscriptionsByDay = async (day: string): Promise<subscriptionInterface
     },
   })
     .then((res) => res.results.map((row: any) => {
-      console.log(row)
         return {
           date: row.properties.Date.date.start,
           description: row.properties['Описание'].rich_text[0]?.text.content || '',
@@ -49,7 +47,7 @@ const getSubscriptionsByDay = async (day: string): Promise<subscriptionInterface
 const updateSubscriptionDate = async (subscription: subscriptionInterface): Promise<void> => {
   await notionClient.pages.create({
     parent: {
-      database_id: NOTION_DB_ID,
+      database_id: notionConfig.dbId,
     },
     properties: {
       title: {
@@ -88,18 +86,22 @@ const updateSubscriptionDate = async (subscription: subscriptionInterface): Prom
   })
 };
 
-export const getTodaySubscriptions = async () => {
+export const getTodaySubscriptions = async (): Promise<subscriptionInterface[]> => {
   const today = dayjs().format('YYYY-MM-DD');
   return getSubscriptionsByDay(today);
 };
 
-export const getNextSubscriptions = async () => {
+export const getNextSubscriptions = async (): Promise<subscriptionInterface[]> => {
   const nextDay = dayjs().add(1, 'day').format('YYYY-MM-DD');
   return getSubscriptionsByDay(nextDay);
 };
 
-export const updateTodaySubscriptions = async () => {
+export const updateTodaySubscriptions = async (): Promise<void> => {
   const subscriptions = await getTodaySubscriptions();
+
+  if (!subscriptions.length) {
+    return;
+  }
 
   await Promise.all([
     subscriptions.map(async (subscription) => updateSubscriptionDate(subscription)),
