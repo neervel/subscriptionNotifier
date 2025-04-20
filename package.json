@@ -9,7 +9,7 @@
     "build": "tsc",
     "start": "node -r dotenv/config --import=specifier-resolution-node/register dist/index.js",
     "start:bot": "node -r dotenv/config --import=specifier-resolution-node/register dist/bot.js",
-    "up": "docker-compose up -d",
+    "up": "docker-compose up -d --build",
     "down": "docker-compose down"
   },
   "keywords": [],

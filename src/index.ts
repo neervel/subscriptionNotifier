@@ -5,7 +5,7 @@ import { sendMessageToAllChats } from './clients/telegram.client';
 import cron from 'node-cron'
 import { notionConfig } from './config/notion.config';
 
-cron.schedule('* * * * *', async () => {
+cron.schedule('0 12 * * *', async () => {
   console.log('Start cron job...');
 
   try {
