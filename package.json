@@ -1,0 +1,31 @@
+{
+  "name": "sub_notify_bot",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --clear-screen=false -r dotenv/config src/index.ts",
+    "dev:bot": "tsx watch --clear-screen=false -r dotenv/config src/bot.ts",
+    "build": "tsc",
+    "start": "node -r dotenv/config --import=specifier-resolution-node/register dist/index.js",
+    "start:bot": "node -r dotenv/config --import=specifier-resolution-node/register dist/bot.js"
+  },
+  "keywords": [],
+  "author": "neervel",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.3.0",
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.5.0",
+    "env-var": "^7.5.0",
+    "specifier-resolution-node": "^1.1.4",
+    "telegraf": "^4.16.3"
+  }
+}
