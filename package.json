@@ -29,6 +29,8 @@
     "dotenv": "^16.5.0",
     "env-var": "^7.5.0",
     "node-cron": "^3.0.3",
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0",
     "specifier-resolution-node": "^1.1.4",
     "telegraf": "^4.16.3"
   }

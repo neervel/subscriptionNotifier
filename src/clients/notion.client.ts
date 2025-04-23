@@ -2,6 +2,7 @@ import { Client } from '@notionhq/client';
 import { notionConfig } from '../config/notion.config';
 import dayjs from 'dayjs';
 import { subscriptionInterface } from '../types/notion.interface';
+import { log } from '../utils/log';
 
 export const notionClient = new Client({
   auth: notionConfig.authToken,
@@ -10,16 +11,17 @@ export const notionClient = new Client({
 await notionClient.search({ page_size: 1 })
   .then((res) => {
     if (res) {
-      console.log('Notion client created!');
+      log.info('Notion client created!');
     } else {
-      console.log('Notion client not created :(');
+      log.info('Notion client not created :(');
     }
   })
   .catch((err) => {
-    console.log('Error while starting notion client:', err);
+    log.info('Error while starting notion client:', err);
   });
 
 const getSubscriptionsByDay = async (day: string): Promise<subscriptionInterface[]> => {
+  log.info(day);
   const subscriptions = await notionClient.databases.query({
     database_id: notionConfig.dbId,
     filter: {
@@ -48,7 +50,7 @@ const getSubscriptionsByDay = async (day: string): Promise<subscriptionInterface
         }
       }))
     .catch((err) => {
-      console.log('[getNextSubscriptions]', err);
+      log.info('[getNextSubscriptions]', err);
       throw err;
     });
 
@@ -56,6 +58,8 @@ const getSubscriptionsByDay = async (day: string): Promise<subscriptionInterface
 };
 
 const updateSubscriptionDate = async (subscription: subscriptionInterface): Promise<void> => {
+  log.info('Updating subscription:', subscription);
+
   await notionClient.pages.create({
     parent: {
       database_id: notionConfig.dbId,
@@ -92,7 +96,10 @@ const updateSubscriptionDate = async (subscription: subscriptionInterface): Prom
 
 export const getTodaySubscriptions = async (): Promise<subscriptionInterface[]> => {
   const today = dayjs().format('YYYY-MM-DD');
-  return getSubscriptionsByDay(today);
+
+  const subscriptions = await getSubscriptionsByDay(today);
+
+  return subscriptions;
 };
 
 export const getNextSubscriptions = async (): Promise<subscriptionInterface[]> => {
@@ -100,10 +107,11 @@ export const getNextSubscriptions = async (): Promise<subscriptionInterface[]> =
   return getSubscriptionsByDay(nextDay);
 };
 
-export const updateTodaySubscriptions = async (): Promise<void> => {
+export const updateSubscriptions = async (): Promise<void> => {
   const subscriptions = await getTodaySubscriptions();
 
   if (!subscriptions.length) {
+    log.info('No subscriptions found for update');
     return;
   }
 
