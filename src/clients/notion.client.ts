@@ -58,7 +58,7 @@ const getSubscriptionsByDay = async (day: string): Promise<subscriptionInterface
 };
 
 const updateSubscriptionDate = async (subscription: subscriptionInterface): Promise<void> => {
-  log.info('Updating subscription:', subscription);
+  log.info(`Updating subscription: ${JSON.stringify(subscription)}`);
 
   await notionClient.pages.create({
     parent: {
@@ -97,9 +97,7 @@ const updateSubscriptionDate = async (subscription: subscriptionInterface): Prom
 export const getTodaySubscriptions = async (): Promise<subscriptionInterface[]> => {
   const today = dayjs().format('YYYY-MM-DD');
 
-  const subscriptions = await getSubscriptionsByDay(today);
-
-  return subscriptions;
+  return getSubscriptionsByDay(today);
 };
 
 export const getNextSubscriptions = async (): Promise<subscriptionInterface[]> => {
@@ -111,7 +109,7 @@ export const updateSubscriptions = async (): Promise<void> => {
   const subscriptions = await getTodaySubscriptions();
 
   if (!subscriptions.length) {
-    log.info('No subscriptions found for update');
+    log.warn('No subscriptions found for update');
     return;
   }
 
