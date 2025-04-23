@@ -4,6 +4,7 @@ import { message } from 'telegraf/filters';
 import { subscriptionInterface } from '../types/notion.interface';
 import { getNextSubscriptions, getTodaySubscriptions } from './notion.client';
 import { generateMessage } from '../utils/generateMessage';
+import { log } from '../utils/log';
 
 export const tgBot = new Telegraf(telegramConfig.botToken);
 
