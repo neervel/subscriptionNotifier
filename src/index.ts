@@ -19,7 +19,7 @@ cron.schedule(cronConfig.checkNextSubscriptions, async () => {
     const message = generateMessage(subscriptions);
     await sendMessageToAllChats('👋 ' + message);
   } catch (err: any) {
-    log.info('Error occurred while trying to get next subscriptions:', err.message);
+    log.error(err, 'Error occurred while trying to get next subscriptions');
   }
 });
 
@@ -30,9 +30,9 @@ cron.schedule(cronConfig.updateSubscriptions, async () => {
     if (notionConfig.updateSubscriptions) {
       await updateSubscriptions();
     } else {
-      log.info('Updating disabled');
+      log.warn('Updating disabled');
     }
   } catch (err: any) {
-    log.info('Error occurred while trying to get next subscriptions:', err.message);
+    log.error(err, 'Error occurred while trying to get next subscriptions');
   }
 });

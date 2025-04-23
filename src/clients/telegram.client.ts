@@ -52,7 +52,7 @@ const sendMessage = async (chatId: number, messageText: string) => {
       log.info(`Message ${messageText} sent to chat ${chatId}`);
     })
     .catch((err: any) => {
-      log.info(err, 'Error while sending message');
+      log.error(err, 'Error while sending message');
     });
 }
 

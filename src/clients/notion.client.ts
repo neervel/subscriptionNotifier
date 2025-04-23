@@ -13,15 +13,14 @@ await notionClient.search({ page_size: 1 })
     if (res) {
       log.info('Notion client created!');
     } else {
-      log.info('Notion client not created :(');
+      log.warn('Notion client not created :(');
     }
   })
   .catch((err) => {
-    log.info('Error while starting notion client:', err);
+    log.error(err, 'Error while starting notion client:');
   });
 
 const getSubscriptionsByDay = async (day: string): Promise<subscriptionInterface[]> => {
-  log.info(day);
   const subscriptions = await notionClient.databases.query({
     database_id: notionConfig.dbId,
     filter: {
@@ -50,7 +49,7 @@ const getSubscriptionsByDay = async (day: string): Promise<subscriptionInterface
         }
       }))
     .catch((err) => {
-      log.info('[getNextSubscriptions]', err);
+      log.error(err, 'getNextSubscriptions failed');
       throw err;
     });
 
@@ -58,7 +57,7 @@ const getSubscriptionsByDay = async (day: string): Promise<subscriptionInterface
 };
 
 const updateSubscriptionDate = async (subscription: subscriptionInterface): Promise<void> => {
-  log.info(`Updating subscription: ${JSON.stringify(subscription)}`);
+  log.info(subscription, 'Updating subscription');
 
   await notionClient.pages.create({
     parent: {
@@ -96,7 +95,6 @@ const updateSubscriptionDate = async (subscription: subscriptionInterface): Prom
 
 export const getTodaySubscriptions = async (): Promise<subscriptionInterface[]> => {
   const today = dayjs().format('YYYY-MM-DD');
-
   return getSubscriptionsByDay(today);
 };
 
