@@ -56,13 +56,27 @@ const sendMessage = async (chatId: number, messageText: string) => {
     });
 }
 
+const sendMessageToThread = async (chatId: number, messageText: string, thread_id: number) => {
+  await tgBot.telegram.sendMessage(chatId, messageText, { message_thread_id: thread_id })
+    .then(() => {
+      log.info(`Message ${messageText} sent to chat ${chatId}`);
+    })
+    .catch((err: any) => {
+      log.error(err, 'Error while sending message');
+    });
+}
+
 export const sendMessageToAllChats = async (messageText: string) => {
   const chatIds = telegramConfig.chats.map(chat => +chat);
   const chatsCount = chatIds.length;
 
   await Promise.all(
     chatIds.map(async (chatId: number) => {
-      await sendMessage(chatId, messageText);
+      if (chatId > 0) {
+        await sendMessage(chatId, messageText);
+      } else {
+       await sendMessageToThread(chatId, messageText, 14);
+      }
     }),
   ).then(() => {
     log.info(`${chatsCount} message${chatsCount > 1 ? 's': ''} sent`);
