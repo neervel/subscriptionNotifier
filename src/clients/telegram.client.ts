@@ -9,6 +9,12 @@ import { log } from '../utils/log';
 export const tgBot = new Telegraf(telegramConfig.botToken);
 
 tgBot.command('today', async (ctx) => {
+  if (ctx.message.chat.id < 0) {
+    if (ctx.message.message_thread_id != 14) {
+      return;
+    }
+  }
+
   log.info(`Get command 'today' from ${JSON.stringify(ctx.message.from)}`);
 
   const subscriptions: subscriptionInterface[] = await getTodaySubscriptions();
@@ -23,6 +29,12 @@ tgBot.command('today', async (ctx) => {
 });
 
 tgBot.command('tomorrow', async (ctx) => {
+  if (ctx.message.chat.id < 0) {
+    if (ctx.message.message_thread_id != 14) {
+      return;
+    }
+  }
+
   log.info(`Get command 'tomorrow' from ${JSON.stringify(ctx.message.from)}`);
 
   const subscriptions: subscriptionInterface[] = await getNextSubscriptions();
@@ -37,6 +49,12 @@ tgBot.command('tomorrow', async (ctx) => {
 });
 
 tgBot.on(message('text'), async (ctx) => {
+  if (ctx.message.chat.id < 0) {
+    if (ctx.message.message_thread_id != 14) {
+      return;
+    }
+  }
+
   if (ctx.message.text.startsWith('/')) return;
 
   log.info(`Get message ${JSON.stringify(ctx.message)} from ${JSON.stringify(ctx.message.from)}`);
